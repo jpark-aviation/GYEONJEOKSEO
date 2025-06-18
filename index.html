@@ -279,14 +279,45 @@
             border-bottom: 3px solid #333; 
             padding-bottom: 15px; 
         }
+        
+        /* PDF 정보 섹션 - 테이블 기반으로 변경 */
         .pdf-info-section { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 20px; 
-            margin-bottom: 30px; 
+            width: 100%;
+            margin-bottom: 30px;
         }
-        .pdf-info-item { margin-bottom: 8px; font-size: 14px; }
-        .pdf-info-label { font-weight: bold; display: inline-block; width: 80px; }
+        
+        .pdf-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        .pdf-info-table td {
+            padding: 8px 0;
+            vertical-align: top;
+            font-size: 14px;
+        }
+        
+        .pdf-info-table .left-column {
+            width: 50%;
+            padding-right: 20px;
+        }
+        
+        .pdf-info-table .right-column {
+            width: 50%;
+            text-align: right;
+            padding-left: 20px;
+        }
+        
+        .pdf-info-item { 
+            margin-bottom: 8px; 
+            font-size: 14px; 
+        }
+        .pdf-info-label { 
+            font-weight: bold; 
+            display: inline-block; 
+            width: 80px; 
+        }
         .pdf-section-title { 
             font-size: 16px; 
             font-weight: bold; 
@@ -380,7 +411,6 @@
             /* 모바일 터치 개선 */
             input, textarea { font-size: 16px; padding: 14px; }
             .items-table button { padding: 10px 15px; min-width: 70px; }
-            .pdf-info-section { grid-template-columns: 1fr; gap: 10px; }
             
             .calculation-row {
                 font-size: 14px;
@@ -388,6 +418,14 @@
             
             .calculation-row.total {
                 font-size: 16px;
+            }
+            
+            /* PDF 정보 테이블 모바일 최적화 */
+            .pdf-info-table .left-column,
+            .pdf-info-table .right-column {
+                width: 100%;
+                padding: 0;
+                text-align: left;
             }
         }
         
@@ -600,19 +638,24 @@
     <!-- PDF 생성용 숨겨진 콘텐츠 -->
     <div id="pdfContent" class="pdf-content">
         <div class="pdf-title">견 적 서</div>
-        <div class="pdf-info-section">
-            <div>
-                <div class="pdf-info-item"><span class="pdf-info-label">일시:</span> <span id="pdfDate"></span></div>
-                <div class="pdf-info-item"><span class="pdf-info-label">받는분:</span> <span id="pdfClientName"></span></div>
-                <div class="pdf-info-item"><span class="pdf-info-label">전화:</span> <span id="pdfClientPhone"></span></div>
-                <div class="pdf-info-item"><span class="pdf-info-label">시공내역:</span> <span id="pdfWorkDetails"></span></div>
-            </div>
-            <div style="text-align: right;">
-                <div class="pdf-info-item"><span class="pdf-info-label">시공자:</span> 좋은이웃 인테리어</div>
-                <div class="pdf-info-item"><span class="pdf-info-label">전화:</span> 010-6687-5111</div>
-                <div class="pdf-info-item"><span class="pdf-info-label">주소:</span> 경기도 화성시 한신대길 83</div>
-            </div>
-        </div>
+        
+        <!-- 테이블 기반 정보 섹션으로 변경 -->
+        <table class="pdf-info-table">
+            <tr>
+                <td class="left-column">
+                    <div class="pdf-info-item"><span class="pdf-info-label">일시:</span> <span id="pdfDate"></span></div>
+                    <div class="pdf-info-item"><span class="pdf-info-label">받는분:</span> <span id="pdfClientName"></span></div>
+                    <div class="pdf-info-item"><span class="pdf-info-label">전화:</span> <span id="pdfClientPhone"></span></div>
+                    <div class="pdf-info-item"><span class="pdf-info-label">시공내역:</span> <span id="pdfWorkDetails"></span></div>
+                </td>
+                <td class="right-column">
+                    <div class="pdf-info-item"><span class="pdf-info-label">시공자:</span> 좋은이웃 인테리어</div>
+                    <div class="pdf-info-item"><span class="pdf-info-label">전화:</span> 010-6687-5111</div>
+                    <div class="pdf-info-item"><span class="pdf-info-label">주소:</span> 경기도 화성시 한신대길 83</div>
+                </td>
+            </tr>
+        </table>
+        
         <div class="pdf-section-title">세부시공내역</div>
         <table class="pdf-table" id="pdfTable">
             <thead>
@@ -903,7 +946,7 @@
             document.body.style.overflow = 'auto';
         }
 
-        // 미리보기 내용 생성
+        // 미리보기 내용 생성 (테이블 기반으로 수정)
         function generatePreviewContent() {
             const date = formatDateToKorean(elements.date.value);
             const clientName = formatClientName(elements.clientName.value);
@@ -918,19 +961,24 @@
             let content = `
                 <div style="font-family: 'Malgun Gothic', Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6;">
                     <div style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 40px; border-bottom: 3px solid #333; padding-bottom: 15px;">견 적 서</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
-                        <div>
-                            <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">일시:</span> ${date}</div>
-                            <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">받는분:</span> ${clientName}</div>
-                            <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">전화:</span> ${clientPhone}</div>
-                            <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">시공내역:</span> ${workDetails}</div>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">시공자:</span> 좋은이웃 인테리어</div>
-                            <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">전화:</span> 010-6687-5111</div>
-                            <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">주소:</span> 경기도 화성시 한신대길 83</div>
-                        </div>
-                    </div>
+                    
+                    <!-- 테이블 기반 정보 섹션 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                        <tr>
+                            <td style="width: 50%; padding-right: 20px; vertical-align: top;">
+                                <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">일시:</span> ${date}</div>
+                                <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">받는분:</span> ${clientName}</div>
+                                <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">전화:</span> ${clientPhone}</div>
+                                <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">시공내역:</span> ${workDetails}</div>
+                            </td>
+                            <td style="width: 50%; padding-left: 20px; text-align: right; vertical-align: top;">
+                                <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">시공자:</span> 좋은이웃 인테리어</div>
+                                <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">전화:</span> 010-6687-5111</div>
+                                <div style="margin-bottom: 8px; font-size: 14px;"><span style="font-weight: bold; display: inline-block; width: 80px;">주소:</span> 경기도 화성시 한신대길 83</div>
+                            </td>
+                        </tr>
+                    </table>
+                    
                     <div style="font-size: 16px; font-weight: bold; margin: 30px 0 15px 0; padding: 8px 0; border-bottom: 2px solid #666;">세부시공내역</div>
                     <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 12px;">
                         <thead>
@@ -1134,7 +1182,9 @@
                     <style>
                         @page { margin: 0.5in; size: A4; }
                         body { font-family: 'Malgun Gothic', Arial, sans-serif; margin: 0; padding: 0; background: white; -webkit-print-color-adjust: exact; }
-                        @media (max-width: 768px) { .pdf-info-section { grid-template-columns: 1fr; gap: 10px; } }
+                        @media (max-width: 768px) { 
+                            table td { width: 100% !important; padding: 0 !important; text-align: left !important; }
+                        }
                     </style>
                 </head>
                 <body>
